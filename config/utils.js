@@ -1,20 +1,24 @@
-const pathFn = require('path')
+const path = require('path')
 const fs = require('fs')
 const dotenv = require('dotenv')
 const rimraf = require('rimraf')
 const dotenvExpand = require('dotenv-expand')
 
 const configFileName = 'config.js'
-const createDir = path => fs.readdirSync(pathFn.join(__dirname, path), 'utf8')
+const createDir = _path => fs.readdirSync(path.join(__dirname, _path), 'utf8')
+
+function assetsPath (asssetFile) {
+    return path.posix.join('static', asssetFile)
+}
 
 // 获取某个文件下的文件列表，可传字符串格式的地址，也可传用字符串地址组成的数组
-function getDirList(path) {
-    if (!path) return
+function getDirList(_path) {
+    if (!_path) return
     
-    if (Array.isArray(path)) {
-        return path.map(curPath => getDirList(curPath))
-    } else if (typeof path === 'string') {
-        return createDir(path)
+    if (Array.isArray(_path)) {
+        return _path.map(curPath => getDirList(curPath))
+    } else if (typeof _path === 'string') {
+        return createDir(_path)
     }
 }
 
@@ -27,7 +31,7 @@ function getCustomConfig(dirList = [], entryPath) {
     const hasCustomConfig = dirList.includes(configFileName)
 
     if (hasCustomConfig) {
-        result = require(pathFn.resolve(entryPath, configFileName))
+        result = require(path.resolve(entryPath, configFileName))
     }
 
     return result
@@ -41,20 +45,22 @@ function isEmptyObject (obj) {
 
 function clearDist () {
     try {
-        rimraf.sync(pathFn.join(__dirname, '../dist'))
+        rimraf.sync(path.join(__dirname, '../dist'))
         console.log('清空 dist 目录')
     } catch (e) {
         console.error(e)
     }
     try {
-        rimraf.sync(pathFn.join(__dirname, '../bundle_analyze'))
+        rimraf.sync(path.join(__dirname, '../bundle_analyze'))
         console.log('清空 bundle_analyze 目录')
     } catch (e) {
         console.error(e)
     }
+    console.log('\n')
 }
 
 module.exports = {
+    assetsPath,
     getDirList,
     getCustomConfig,
     isEmptyObject,

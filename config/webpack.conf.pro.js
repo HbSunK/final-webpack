@@ -7,5 +7,7 @@ const config = require('./generatorConfig/index')
 clearDist()
 
 module.exports = config({
-    mode: 'development'
+    // mode: 'development',
+    mode: 'production',
+    devtool: 'source-map',
 })

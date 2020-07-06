@@ -1,15 +1,18 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const merge = require('webpack-merge')
 
-function genHtmlWebpackPlugins(entryName, customConf) {
-    // htmlWebpackPlugin在配置合并的时候，只会合并以下属性，过滤其他奇怪的属性，防止意外情况发生
-    const keyMap = [
-        'template',
-        'filename',
-        'title'
-    ]
-    const curCustomConf = customConf[entryName]
+// htmlWebpackPlugin在配置合并的时候，只会合并以下属性，过滤其他奇怪的属性，防止意外情况发生
+const keyMap = [
+    'template',
+    'filename',
+    'title'
+]
+// 自定义配置的默认入口
+const customEntry = '../../src/entry-pages/'
+
+function genHtmlWebpackPlugins(entryName, curCustomConf) {
     let curConfig = genDefaultHtmlWebpackPlugin()
 
     // 自定义配置存在就使用自定义的配置覆盖默认配置
@@ -20,7 +23,7 @@ function genHtmlWebpackPlugins(entryName, customConf) {
         configKeys.forEach(key => {
             config[key] = path.join(
                 __dirname,
-                (key === 'template' ? `../../src/entry-pages/${entryName}` : './'),
+                (key === 'template' ? (customEntry + entryName) : './'),
                 curCustomConf[key]
             )
         })
@@ -37,7 +40,9 @@ function genDefaultHtmlWebpackPlugin () {
         template: 'src/public/index.html',
         filename: 'index.html',              // 对生成的模板重新命名
         title: 'default title',
-        chunks: [],
+        chunks: [
+            'commons'
+        ],
         attributes: {
             crossorigin: 'anonymous'
         },
@@ -50,6 +55,19 @@ function genDefaultHtmlWebpackPlugin () {
     }
 }
 
-module.exports = {
-    genHtmlWebpackPlugins
+function genCssExtPlugin(entryName) {
+    return new MiniCssExtractPlugin({
+        fileName: '[name].css',
+        chunkFilename: '[id].css',
+        publicPath: ''
+    })
 }
+
+function genPlugins(entryName, customConf = {}) {
+    return [
+        genHtmlWebpackPlugins(entryName, customConf),
+        genCssExtPlugin(entryName)
+    ]
+}
+
+module.exports = genPlugins

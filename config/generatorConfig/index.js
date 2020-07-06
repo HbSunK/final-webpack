@@ -2,16 +2,20 @@ const fs = require('fs')
 const path = require('path')
 const merge = require('webpack-merge')
 
-const { genHtmlWebpackPlugins } = require('./plugins')
+const extendPrototype = require('../../tools/extendPrototype')
+
 const { entryConfig, customConfigs } = require('./entryConfig')
 const outputConfig = require('./outputConfig')
 const defaultConfig = require('./defaultConfig')
+const genPlugins = require('./plugins')
+const genLoaders = require('./loaders')
 
-// console.log(genHtmlWebpackPlugins('login', customConfigs))
-// genHtmlWebpackPlugins(entryConfig, customConfigs)
-
+console.log('入口文件：')
 console.log(entryConfig)
-console.log(customConfigs)
+console.log('\n')
+
+// 扩展原生对象方法
+extendPrototype()
 
 function genDefaultConfig(envConfig = {}) {
     return merge({}, defaultConfig(), envConfig)
@@ -19,22 +23,32 @@ function genDefaultConfig(envConfig = {}) {
 
 function genConfig (envConfig = {}) {
     return Object.keys(entryConfig).map(entryName => {
-        const config = {
-            plugins: []
-        }
         const defaultConfig = genDefaultConfig(envConfig)
         const curCustomConfig = customConfigs[entryName]
-
-        config.entry = {
-            [entryName]: entryConfig[entryName]
+        const config = {
+            entry: {},
+            plugins: [],
+            module: {
+                rules: []
+            }
         }
 
+        config.entry[entryName] = entryConfig[entryName]
+        
         config.output = outputConfig(entryName)
 
-        config.plugins.push(genHtmlWebpackPlugins(entryName, curCustomConfig || {}))
+        config.plugins.arrayConcat(genPlugins(entryName, curCustomConfig))
 
-        if (curCustomConfig && curCustomConfig.plugins) {
-            config.plugins.push(...curCustomConfig.plugins)
+        config.module.rules.arrayConcat(genLoaders())
+
+        // 添加自定义plugins和loader
+        if (curCustomConfig) {
+            if (curCustomConfig.plugins) {
+                config.plugins.arrayConcat(curCustomConfig.plugins)
+            }
+            if (curCustomConfig.loaders) {
+                
+            }
         }
 
         return merge(defaultConfig, config)

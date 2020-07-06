@@ -1,8 +1,9 @@
 html, body {
     height: 100vh;
     font-size: 20px;
-    color: #fff;
-    background: grey url(../img/sprite.src-img1.png) center center no-repeat;
+    color: #999;
+    /* background: grey url(../img/sprite.src-img1.png) center center no-repeat; */
+    background: grey url(../../../../public/5dffd201426040c4809a0b73c3285224.jpg) center center no-repeat;
     text-align: center;
-    transform: scale(1.5);
+    transform: scale(1);
 }
