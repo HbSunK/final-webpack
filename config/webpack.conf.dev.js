@@ -2,7 +2,11 @@ const path = require('path')
 const fs = require('path')
 const merge = require('webpack-merge')
 
+const { initNodeEnv } = require('./utils')
 const config = require('./generatorConfig/index')
+const env = require('../env/env_production')
+
+initNodeEnv(env)
 
 module.exports = config({
     mode: 'development',

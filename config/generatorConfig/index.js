@@ -26,6 +26,7 @@ function genConfig (envConfig = {}) {
         const defaultConfig = genDefaultConfig(envConfig)
         const curCustomConfig = customConfigs[entryName]
         const config = {
+            mode: process.env.NODE_ENV,
             entry: {},
             plugins: [],
             module: {

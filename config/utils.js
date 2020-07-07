@@ -1,8 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const dotenv = require('dotenv')
 const rimraf = require('rimraf')
-const dotenvExpand = require('dotenv-expand')
 
 const configFileName = 'config.js'
 const createDir = _path => fs.readdirSync(path.join(__dirname, _path), 'utf8')
@@ -59,10 +57,19 @@ function clearDist () {
     console.log('\n')
 }
 
+function initNodeEnv (config) {
+    if (!config || typeof config !== 'object') return
+
+    Object.keys(config).forEach(envKey => {
+        process.env[envKey] = config[envKey]
+    })
+}
+
 module.exports = {
     assetsPath,
     getDirList,
     getCustomConfig,
     isEmptyObject,
-    clearDist
+    clearDist,
+    initNodeEnv
 }
