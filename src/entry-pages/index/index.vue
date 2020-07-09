@@ -17,6 +17,7 @@ export default {
     created() {
         console.log('vue data ======>')
         console.log(this.$data)
+        console.log('vue require', require('./plulic/img/sprite.src-img1.png'))
         fn()
     }
 }

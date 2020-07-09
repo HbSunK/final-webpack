@@ -8,7 +8,7 @@ const { entryConfig, customConfigs } = require('./entryConfig')
 const outputConfig = require('./outputConfig')
 const defaultConfig = require('./defaultConfig')
 const genPlugins = require('./plugins')
-const genLoaders = require('./loaders')
+const {genLoaders} = require('./loaders')
 
 console.log('入口文件：')
 console.log(entryConfig)

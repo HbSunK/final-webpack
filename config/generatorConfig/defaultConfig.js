@@ -1,6 +1,8 @@
 const path = require('path')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { assetsPath } = require('../utils')
+const { genLoaders } = require('./loaders')
 
 const defaultConfig = {
     assetsSubDirectory: 'static',
@@ -33,11 +35,13 @@ function genDefaultConfig () {
                 //     test: /\.pug$/,
                 //     loader: 'pug-loader'
                 // },
-                // {
-                //     test: /\.vue$/,
-                //     loader: 'vue-loader',
-                //     options: vueLoaderConfig
-                // },
+                {
+                    test: /\.vue$/,
+                    loader: 'vue-loader',
+                    options: {
+                        loaders: genLoaders()
+                    }
+                },
                 {
                     test: /\.(js|jsx|ts)$/,
                     loader: 'babel-loader',
@@ -85,7 +89,8 @@ function genDefaultConfig () {
                 cssProcessorOptions: {
                     discardComments: { removeAll: true }
                 }
-            })
+            }),
+            new VueLoaderPlugin()
         ],
         optimization: {
             usedExports: true,                  //哪些导出的模块被使用了，再做打包

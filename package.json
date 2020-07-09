@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --config config/webpack.dev.config.js --progress",
-    "build": "webpack --config config/webpack.pro.config.js --progress --colors"
+    "build:client": "webpack --config config/webpack.pro.config.js --progress --colors",
+    "clean": "rimraf dist",
+    "build": "npm run clean && npm run build:client"
   },
   "repository": {
     "type": "git",
